@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
 
 class AnecdoteForm extends React.Component {
@@ -6,10 +7,7 @@ class AnecdoteForm extends React.Component {
     e.preventDefault()
     const content = e.target.anecdote.value
     console.log('content: ' + content)
-    this.props.store.dispatch(
-      createAnecdote(content)
-    )
-
+    this.props.createAnecdote(content)
     e.target.anecdote.value = ''
   }
   render() {
@@ -25,4 +23,19 @@ class AnecdoteForm extends React.Component {
   }
 }
 
-export default AnecdoteForm
+const mapStateToProps = (state) => {
+  return {
+    anecdotes: state.anecdotes
+  }
+}
+
+const mapDispatchToProps = {
+  createAnecdote
+}
+
+const ConnectedAnecdoteForm = connect(
+  mapStateToProps,
+  mapDispatchToProps
+) (AnecdoteForm)
+
+export default ConnectedAnecdoteForm
