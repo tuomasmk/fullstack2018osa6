@@ -1,13 +1,19 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
-const Menu = () => (
-  <div>    
+const Menu = () => {
+  const menuStyle = {
+    paddingTop: '5px',
+    paddingBottom: '10px',
+    backgroundColor: 'lightblue'
+  }
+  return (
+  <div style={menuStyle}>    
     <Link to='/'>anecdotes</Link>&nbsp;
     <Link to='/create'>create new</Link>&nbsp;
     <Link to='/about'>about</Link>&nbsp;
   </div>
-)
+)}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -160,6 +166,18 @@ class App extends React.Component {
   }
 
   render() {
+    const notificationStyle = {
+      color: 'green',
+      fontSize: 16,
+      borderStyle: 'solid',
+      borderWidth: '3px',
+      borderColor: 'green',
+      borderRadius: '5px',
+      padding: '5px',
+      margin: '3px',
+      backgroundColor: 'lightblue'
+    }
+
     return (
       <div>
         <h1>Software anecdotes</h1>
@@ -167,7 +185,7 @@ class App extends React.Component {
           <div>
             <Menu />
             {this.state.notification !== '' 
-              ? <div>{this.state.notification}</div>
+              ? <div style={notificationStyle}>{this.state.notification}</div>
               : null}
             <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
             <Route exact path="/anecdotes/:id" render={({match}) =>
