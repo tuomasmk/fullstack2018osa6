@@ -13,6 +13,20 @@ const notificationReducer = ( state = notificationAtStart, action ) => {
   }
 }
 
+export const showMessageFor = (message, time) => {
+  console.log('message: ' + message)
+  console.log('time: ' + time)
+  return async (dispatch) => {
+    await dispatch({
+      type: 'ADD',
+      message
+    })
+    setTimeout(() => {
+      dispatch({ type: 'DELETE' })
+    }, time * 1000)
+  }
+}
+
 export const addMessage = (message) => {
   return {
     type: 'ADD',
