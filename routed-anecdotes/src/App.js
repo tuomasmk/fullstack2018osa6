@@ -1,29 +1,39 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Button, Form, Grid, Divider, Menu, Message, Table, Container } from 'semantic-ui-react'
 
-const Menu = () => {
-  const menuStyle = {
-    paddingTop: '5px',
-    paddingBottom: '10px',
-    backgroundColor: 'lightblue'
-  }
+const AppMenu = () => {
   return (
-  <div style={menuStyle}>    
-    <Link to='/'>anecdotes</Link>&nbsp;
-    <Link to='/create'>create new</Link>&nbsp;
-    <Link to='/about'>about</Link>&nbsp;
-  </div>
+    <Menu inverted color='olive'>
+      <Menu.Item link>
+        <Link to='/'>anecdotes</Link>&nbsp;
+      </Menu.Item>
+      <Menu.Item>
+        <Link to='/create'>create new</Link>&nbsp;
+      </Menu.Item>
+      <Menu.Item>
+        <Link to='/about'>about</Link>&nbsp;
+      </Menu.Item>
+    </Menu>
 )}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
-    <ul>
-      {anecdotes.map(anecdote => 
-        <li key={anecdote.id}>
-          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-        </li>)}
-    </ul>  
+    <Table striped celled>
+      <Table.Body>
+        {anecdotes.map(anecdote => 
+          <Table.Row key={anecdote.id}>
+            <Table.Cell>
+              <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+            </Table.Cell>
+            <Table.Cell>
+              {anecdote.user}
+            </Table.Cell>
+          </Table.Row>
+        )}
+      </Table.Body>
+    </Table>
   </div>
 )
 
@@ -40,14 +50,23 @@ const Anecdote = ({ anecdote }) => (
 const About = () => (
   <div>
     <h2>About anecdote app</h2>
-    <p>According to Wikipedia:</p>
+    <Grid columns='2' >
+      <Grid.Row>
+        <Grid.Column>
+          <p>According to Wikipedia:</p>
     
-    <em>An anecdote is a brief, revealing account of an individual person or an incident. 
-      Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
-      such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative. 
-      An anecdote is "a story with a point."</em>
+          <em>An anecdote is a brief, revealing account of an individual person or an incident. 
+            Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself, 
+            such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative. 
+            An anecdote is "a story with a point."</em>
 
-    <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+          <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
+        </Grid.Column>
+        <Grid.Column>
+          <img src='https://upload.wikimedia.org/wikipedia/commons/0/0f/Ada_lovelace.jpg' alt='Lovelace' />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   </div>
 )
 
@@ -89,21 +108,21 @@ class CreateNew extends React.Component {
     return(
       <div>
         <h2>create a new anecdote</h2>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            content 
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Field>
+            <label>content</label>
             <input name='content' value={this.state.content} onChange={this.handleChange} />
-          </div>
-          <div>
-            author
+          </Form.Field>
+          <Form.Field>
+            <label>author</label>
             <input name='author' value={this.state.author} onChange={this.handleChange} />
-          </div>
-          <div>
-            url for more info
+          </Form.Field>
+          <Form.Field>
+            <label>url for more info</label>
             <input name='info' value={this.state.info} onChange={this.handleChange} />
-          </div> 
-          <button>create</button>
-        </form>
+          </Form.Field>
+          <Button type='submit'>create</Button>
+        </Form>
       </div>  
     )
 
@@ -178,25 +197,32 @@ class App extends React.Component {
       backgroundColor: 'lightblue'
     }
 
+    const containerStyle = {
+      backgroundColor: 'rgb(204, 255, 255)'
+    }
     return (
-      <div>
-        <h1>Software anecdotes</h1>
-        <Router>
-          <div>
-            <Menu />
-            {this.state.notification !== '' 
-              ? <div style={notificationStyle}>{this.state.notification}</div>
-              : null}
-            <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
-            <Route exact path="/anecdotes/:id" render={({match}) =>
-              <Anecdote anecdote={this.anecdoteById(match.params.id)} />} />
-            <Route path="/about" render={() => <About />} />
-            <Route path="/create" render={({history}) => 
-              <CreateNew history={history} addNew={this.addNew} setState={this.setState}/>} />
-          </div>
-        </Router>
-        <Footer />
-      </div>
+      <Container style={containerStyle}>
+        <div>
+          <h1>Software anecdotes</h1>
+          <Router>
+            <div>
+              <AppMenu />
+              {this.state.notification !== '' &&
+                <Message success>
+                  {this.state.notification}
+                </Message>}
+              <Route exact path="/" render={() => <AnecdoteList anecdotes={this.state.anecdotes} />} />
+              <Route exact path="/anecdotes/:id" render={({match}) =>
+                <Anecdote anecdote={this.anecdoteById(match.params.id)} />} />
+              <Route path="/about" render={() => <About />} />
+              <Route path="/create" render={({history}) => 
+                <CreateNew history={history} addNew={this.addNew} setState={this.setState}/>} />
+            </div>
+          </Router>
+          <Divider />
+          <Footer />
+        </div>
+      </Container>
     );
   }
 }
