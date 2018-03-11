@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import ConnectFilter from '../components/Filter'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
 import { addMessage, deleteMessage } from '../reducers/notificationReducer'
+import anecdoteService from '../services/anecdotes'
 
 class AnecdoteList extends React.Component {
-  voteClicked = (id) => () => {
+  voteClicked = (id) => async () => {
     console.log('voteClicked, id: ' + id + ', type: ' + typeof(id))
-    this.props.voteAnecdote(id)
-    const anecdote = this.props.visibleAnecdotes.find(x =>  x.id === id)
-    this.props.addMessage('you voted \'' + anecdote.content + '\'')
+    const changedAnecdote = await anecdoteService.vote(id)
+    this.props.voteAnecdote(changedAnecdote)
+    this.props.addMessage('you voted \'' + changedAnecdote.content + '\'')
     setTimeout(() => {
       this.props.deleteMessage()
     }, 5000)
